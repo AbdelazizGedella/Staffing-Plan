@@ -3,72 +3,178 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Manpower Calculation</title>
-        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
-
+    <title>Manpower Calculation - Telford Method</title>
+    
+    <!-- FontAwesome for Icons -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+
+    <!-- Google Fonts for better typography -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
     <style>
+        /* Dark background and responsive layout */
         body {
             background-color: #333;
             color: white;
-            font-family: Arial, sans-serif;
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
             padding: 20px;
         }
-        .formula, .steps {
-            font-size: 1.5rem;
+
+        h1 {
+            font-size: 2.5rem;
+            text-align: center;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #444;
+            border-radius: 10px;
+        }
+
+        .formula, .steps, .input-section {
             margin-bottom: 20px;
         }
+
+        .formula code, .steps code {
+            background-color: #222;
+            padding: 5px 10px;
+            border-radius: 5px;
+        }
+
+        .steps ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+
+        .steps li {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+        }
+
         .output {
             font-size: 2rem;
             color: #4CAF50;
+            text-align: center;
         }
+
         .linkedin {
             margin-top: 20px;
             font-size: 1.2rem;
+            text-align: center;
+        }
+
+        /* Input Fields Style */
+        .input-section input {
+            padding: 10px;
+            font-size: 1rem;
+            border-radius: 5px;
+            border: none;
+            margin-right: 10px;
+            width: 200px;
+        }
+
+        .input-section button {
+            padding: 10px 20px;
+            background-color: #5C6BC0;
+            color: white;
+            font-size: 1rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .input-section button:hover {
+            background-color: #3F51B5;
+        }
+
+        /* LinkedIn Link Style */
+        .linkedin a {
+            color: #4CAF50;
+            text-decoration: none;
+        }
+
+        .linkedin a:hover {
+            text-decoration: underline;
         }
     </style>
 </head>
 <body>
-<i class="fas fa-human"></i>
-    <h1>Manpower Calculation - Telford Method</h1>
 
-    <!-- Display Formula -->
-    <div class="formula">
-        <p><strong>Formula:</strong></p>
-        <p><code>FTE = (Number of staff required in 24hrs × Shift working hours × 7 Days) / 48 hours</code></p>
-        <p><strong>Additional 15% for Unproductive Days:</strong></p>
-        <p><code>Final staffing required = FTE + 15% of FTE</code></p>
-    </div>
+    <div class="container">
 
-    <!-- Calculation Steps with Slow Motion -->
-    <div class="steps">
-        <h3>Calculation Steps:</h3>
-        <ul id="stepsList">
-            <!-- Steps will appear here -->
-        </ul>
-    </div>
+        <h1><i class="fas fa-users"></i><br>Manpower Calculation - Telford Method</h1>
 
-    <div class="output">
-        <p>Final staffing required: <span id="finalStaffing">Calculating...</span></p>
-    </div>
+        <!-- Input Section -->
+        <div class="input-section">
+            <label for="staffRequired" class="fas fa-users"> Number of Staff required in 24hrs:</label>
+            <input type="number" id="staffRequired" placeholder="Enter number of staff" required>
 
-    <!-- LinkedIn Credit -->
-    <div class="linkedin">
-        <p>Developed by <a href="https://www.linkedin.com/in/abdelaziz-ibrahim-gedeleila-773b2b141/" target="_blank">Abdelaziz Ibrahim Gedelleila</a> on LinkedIn</p>
+            <label for="shiftHours" class="fas fa-clock"> Shift working hours:</label>
+            <input type="number" id="shiftHours" placeholder="Enter shift hours" required value="12">
+
+            <label for="overtime" class="fas fa-clock"> Overtime (12 hours as overtime):</label>
+            <input type="checkbox" id="overtime" />
+
+            <button onclick="calculateManpower()">Calculate Staffing</button>
+        </div>
+
+        <!-- Display Formula -->
+        <div class="formula">
+            <p><strong>Formula:</strong></p>
+            <p><code>FTE = (Number of staff required in 24hrs × Shift working hours × 7 Days) / 48 hours</code></p>
+            <p><strong>Additional 15% for Unproductive Days:</strong></p>
+            <p><code>Final staffing required = FTE + 15% of FTE</code></p>
+        </div>
+
+        <!-- Calculation Steps with Slow Motion -->
+        <div class="steps">
+            <h3>Calculation Steps:</h3>
+            <ul id="stepsList">
+                <!-- Steps will appear here -->
+            </ul>
+        </div>
+
+        <!-- Output of Final Staffing -->
+        <div class="output">
+            <p>Final staffing required: <span id="finalStaffing">Calculating...</span></p>
+        </div>
+
+        <!-- LinkedIn Credit -->
+        <div class="linkedin">
+            <p>Developed by <a href="https://www.linkedin.com/in/abdelaziz-ibrahim-gedeleila-773b2b141/" target="_blank">Abdelaziz Ibrahim Gedelleila</a> on LinkedIn</p>
+        </div>
     </div>
 
     <script>
-        // Function to perform slow-motion calculation
-        function calculateManpower(staffRequired24hrs, shiftHours) {
+        // Function to perform the manpower calculation
+        function calculateManpower() {
+            let staffRequired24hrs = document.getElementById('staffRequired').value;
+            let shiftHours = document.getElementById('shiftHours').value;
+            let overtime = document.getElementById('overtime').checked;
+
+            // Validate the inputs
+            if (!staffRequired24hrs || !shiftHours) {
+                alert("Please fill in all fields!");
+                return;
+            }
+
             let steps = document.getElementById('stepsList');
             let finalStaffing = document.getElementById('finalStaffing');
 
-            let FTE = (staffRequired24hrs * shiftHours * 7) / 48; // FTE Calculation
+            let divisor = overtime ? 60 : 48;  // Adjust divisor based on overtime check
+            let FTE = (staffRequired24hrs * shiftHours * 7) / divisor; // FTE Calculation
             let additionalCoverage = FTE * 0.15; // Additional 15% for unproductive days
             let totalStaffing = FTE + additionalCoverage;
 
+            // Clear previous steps
+            steps.innerHTML = "";
+
+            // Display the steps with slow-motion effect
             let step1 = document.createElement('li');
-            step1.textContent = `Step 1: FTE = (${staffRequired24hrs} × ${shiftHours} × 7) / 48 = ${FTE.toFixed(2)}`;
+            step1.textContent = `Step 1: FTE = (${staffRequired24hrs} × ${shiftHours} × 7) / ${divisor} = ${FTE.toFixed(2)}`;
             steps.appendChild(step1);
 
             setTimeout(function() {
@@ -85,9 +191,6 @@
                 finalStaffing.textContent = totalStaffing.toFixed(2); // Display final staffing value
             }, 4000);
         }
-
-        // Trigger the calculation
-        calculateManpower(50, 12); // Example values: 50 staff required in 24hrs, 12 hour shifts
     </script>
 
 </body>
