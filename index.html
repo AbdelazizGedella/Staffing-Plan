@@ -3,86 +3,92 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Staffing Plan Calculator - Teleford Method</title>
-    <!-- Bootstrap CSS -->
+    <title>Manpower Calculation</title>
         <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
     <style>
         body {
-            background-color: #343a40; /* Dark background */
-            color: white; /* Light font color */
+            background-color: #333;
+            color: white;
+            font-family: Arial, sans-serif;
+            padding: 20px;
         }
-        .container {
-            max-width: 600px;
-            margin-top: 50px;
-        }
-        .form-control, .btn {
-            font-size: 1.1rem;
-        }
-        h2, .lead {
+        .formula, .steps {
             font-size: 1.5rem;
+            margin-bottom: 20px;
+        }
+        .output {
+            font-size: 2rem;
+            color: #4CAF50;
+        }
+        .linkedin {
+            margin-top: 20px;
+            font-size: 1.2rem;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <i class="fas fa-man"></i>
-        <h2 class="text-center">Staffing Plan Calculator (Teleford Method)</h2>
-        <p class="lead text-center">Calculate required manpower based on the Teleford formula and unproductive days.</p>
+<i class="fas fa-human"></i>
+    <h1>Manpower Calculation - Telford Method</h1>
 
-        <!-- Form to collect inputs -->
-        <form id="staffingForm">
-            <div class="mb-3">
-                <label for="staffRequired" class="form-label">Number of Staff Required in 24 hours</label>
-                <input type="number" class="form-control" id="staffRequired" required>
-            </div>
-            <div class="mb-3">
-                <label for="shiftHours" class="form-label">Shift Working Hours (e.g. 12)</label>
-                <input type="number" class="form-control" id="shiftHours" value="12" required>
-            </div>
-            <button type="submit" class="btn btn-primary w-100">Calculate Staffing Plan</button>
-        </form>
-
-        <!-- Result Display -->
-        <div id="result" class="mt-4" style="display: none;">
-            <h4>Staffing Plan Result</h4>
-            <p><strong>FTE (Full-Time Equivalent):</strong> <span id="fteResult"></span></p>
-            <p><strong>Additional 15% for Unproductive Days:</strong> <span id="additionalFTE"></span></p>
-            <p><strong>Total Staff Needed (including 15% coverage):</strong> <span id="totalStaff"></span></p>
-        </div>
+    <!-- Display Formula -->
+    <div class="formula">
+        <p><strong>Formula:</strong></p>
+        <p><code>FTE = (Number of staff required in 24hrs × Shift working hours × 7 Days) / 48 hours</code></p>
+        <p><strong>Additional 15% for Unproductive Days:</strong></p>
+        <p><code>Final staffing required = FTE + 15% of FTE</code></p>
     </div>
 
-    <!-- Bootstrap JS and Popper -->
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
+    <!-- Calculation Steps with Slow Motion -->
+    <div class="steps">
+        <h3>Calculation Steps:</h3>
+        <ul id="stepsList">
+            <!-- Steps will appear here -->
+        </ul>
+    </div>
+
+    <div class="output">
+        <p>Final staffing required: <span id="finalStaffing">Calculating...</span></p>
+    </div>
+
+    <!-- LinkedIn Credit -->
+    <div class="linkedin">
+        <p>Developed by <a href="https://www.linkedin.com/in/abdelaziz-ibrahim-gedeleila-773b2b141/" target="_blank">Abdelaziz Ibrahim Gedelleila</a> on LinkedIn</p>
+    </div>
+
     <script>
-        // Handle form submission and perform calculations
-        document.getElementById("staffingForm").addEventListener("submit", function(event) {
-            event.preventDefault();
+        // Function to perform slow-motion calculation
+        function calculateManpower(staffRequired24hrs, shiftHours) {
+            let steps = document.getElementById('stepsList');
+            let finalStaffing = document.getElementById('finalStaffing');
 
-            // Get user input
-            let staffRequired = parseFloat(document.getElementById("staffRequired").value);
-            let shiftHours = parseFloat(document.getElementById("shiftHours").value);
+            let FTE = (staffRequired24hrs * shiftHours * 7) / 48; // FTE Calculation
+            let additionalCoverage = FTE * 0.15; // Additional 15% for unproductive days
+            let totalStaffing = FTE + additionalCoverage;
 
-            // Formula to calculate FTE
-            const totalWorkingHoursPerWeek = 48;
-            const daysInWeek = 7;
+            let step1 = document.createElement('li');
+            step1.textContent = `Step 1: FTE = (${staffRequired24hrs} × ${shiftHours} × 7) / 48 = ${FTE.toFixed(2)}`;
+            steps.appendChild(step1);
 
-            let fte = (staffRequired * shiftHours * daysInWeek) / totalWorkingHoursPerWeek;
+            setTimeout(function() {
+                let step2 = document.createElement('li');
+                step2.textContent = `Step 2: Additional 15% = ${FTE.toFixed(2)} × 15% = ${additionalCoverage.toFixed(2)}`;
+                steps.appendChild(step2);
+            }, 2000);
 
-            // Calculate 15% additional coverage for unproductive days
-            let additionalFTE = fte * 0.15;
-            let totalStaff = fte + additionalFTE;
+            setTimeout(function() {
+                let step3 = document.createElement('li');
+                step3.textContent = `Step 3: Final Staffing = ${FTE.toFixed(2)} + ${additionalCoverage.toFixed(2)} = ${totalStaffing.toFixed(2)}`;
+                steps.appendChild(step3);
 
-            // Display results
-            document.getElementById("fteResult").innerText = fte.toFixed(2);
-            document.getElementById("additionalFTE").innerText = additionalFTE.toFixed(2);
-            document.getElementById("totalStaff").innerText = totalStaff.toFixed(2);
+                finalStaffing.textContent = totalStaffing.toFixed(2); // Display final staffing value
+            }, 4000);
+        }
 
-            // Show result div
-            document.getElementById("result").style.display = "block";
-        });
+        // Trigger the calculation
+        calculateManpower(50, 12); // Example values: 50 staff required in 24hrs, 12 hour shifts
     </script>
+
 </body>
 </html>
